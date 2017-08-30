@@ -5,8 +5,8 @@ Created on Tue Jul  4 11:36:45 2017
 @author: d_xuan
 """
 import flickrapi
-import os
-from utils import *
+
+from utils.grab_utils import *
 
 api_key = '5b3bf647e7b5ad46255ba8b8ebad6a4e'
 api_secret= 'dc6af0c6dad6c128'
