@@ -2,12 +2,15 @@
 """
 Created on Tue Jul  4 11:36:45 2017
 
-@author: d_xuan
+@author: ding_x
 """
 import flickrapi
 
 from utils.grab_utils import *
 
+'''
+调用flickr api的search接口，实现flickr的自动抓取
+'''
 api_key = '5b3bf647e7b5ad46255ba8b8ebad6a4e'
 api_secret= 'dc6af0c6dad6c128'
 flickr=flickrapi.FlickrAPI(api_key,api_secret,cache=True,format='json')
@@ -16,6 +19,12 @@ stor_path = "C:\\Users\\xgxy03\\Desktop\\data"
 
 
 def grab_date_data(city_name,last_days):
+    '''
+    根据城市名，自动抓取该城市的指定日期的flickr数据
+    :param city_name:
+    :param last_days:
+    :return:
+    '''
     city_coor_list = load_city_area(city_name)
     while last_days >0 :
         data_count = 0

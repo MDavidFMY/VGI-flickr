@@ -2,19 +2,27 @@
 """
 Created on Tue Jul  4 11:36:45 2017
 
-@author: d_xuan
+@author: ding_x
 """
 import json
 import os
 import MySQLdb
 import time
 import datetime
-config_path = "./config/"
+
+config_path = "../config/"
 datetime_format = '%Y-%m-%d %H:%M:%S'
 
 
-#根据输入坐标范围，生成抓取位置点
 def grab_area(lat_min,lat_max,lon_min,lon_max) :
+    '''
+    根据输入的坐标范围生成抓取点阵
+    :param lat_min:
+    :param lat_max:
+    :param lon_min:
+    :param lon_max:
+    :return:
+    '''
     area = []
     for i in range(0,2):
         if i ==1:
@@ -30,8 +38,13 @@ def grab_area(lat_min,lat_max,lon_min,lon_max) :
             lat += 0.1
     return area
 
-#加载城市列表及对应抓取范围  cityformat:city_name lat_min lat_max lon_min lon_max
+
 def load_city_area(city_name):
+    '''
+    加载指定城市的抓取范围
+    :param city_name:
+    :return:
+    '''
     city_file = open(config_path+'city_list.txt')
     city_area=[]
     try:
@@ -48,8 +61,12 @@ def load_city_area(city_name):
         city_file.close()
     return city_area
 
-#从配置文件中读取抓取日期
+
 def get_grab_date():
+    '''
+    从日期配置文件中读取抓取日期
+    :return:
+    '''
     date = {'start_time':'','year':'','month':'','day':''}
     date_file = open(config_path + 'date_config.json')
     try:
@@ -65,8 +82,13 @@ def get_grab_date():
     date["day"] = str(dt.day)
     return date
 
-#将日期转化为对应抓取unix时间戳列表
+
 def convert_grab_date(start_time):
+    '''
+    将日期字符串转化为对应抓取unix时间戳列表
+    :param start_time:
+    :return:
+    '''
     unix_time = []
     min_date = time.mktime(time.strptime(start_time, datetime_format))
     unix_time.append(int(min_date))
@@ -77,8 +99,12 @@ def convert_grab_date(start_time):
     unix_time.append(int(max_date))
     return unix_time
 
-#日期配置文件的日期增加操作
+
 def add_one_day():
+    '''
+    实现日期配置文件中抓取日期的自动增加
+    :return:
+    '''
     date_file = open(config_path + 'date_config.json')
     try:
         date_config = date_file.read()
@@ -96,6 +122,12 @@ def add_one_day():
 
 
 def sto_photos (photos,filename):
+    '''
+    提取flickr中的photo字段，并保存本地
+    :param photos:
+    :param filename:
+    :return:
+    '''
     resultfile = file(filename, "a+")
     #print '写入文件'+ filename
     for photo in photos:
@@ -104,6 +136,13 @@ def sto_photos (photos,filename):
     resultfile.close()
 
 def data_static(city_name,date,count):
+    '''
+    统计抓取城市每天的数据获取量
+    :param city_name:
+    :param date:
+    :param count:
+    :return:
+    '''
     statics = {'city_name':city_name,'date':date,'count':count}
     storfile = file(config_path + "grab_statics.json", "a+")
     storfile.write(json.dumps(statics))
@@ -111,8 +150,8 @@ def data_static(city_name,date,count):
     storfile.close()
 
 def write_config():
-    date = {"start_time":"2016-02-01 00:00:00"}
-    storfile = file(config_path+"date_config.json","w+")
+    date = {"Client_ID":"ekcyWUdPNnkwSlRrMThjMVhWTFV0dzphYjRiMmE0MzM3YzQzMTAy","Client Secret":"MWQ2MWViYjBmZTRlNGJhNmYxZTZhYjI2MjczN2UzMDM="}
+    storfile = file(config_path+"mapillary_token.txt","w+")
     storfile.write(json.dumps(date))
     storfile.close()
 

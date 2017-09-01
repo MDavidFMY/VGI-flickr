@@ -2,12 +2,12 @@
 """
 Created on Tue Jul  4 11:36:45 2017
 
-@author: d_xuan
+@author: ding_x
 """
 import MySQLdb
 db = ''
 
-
+#数据库连接
 def connect_sql(db_name):
     try:
         db_obj = MySQLdb.connect("localhost", "root", "123456", db_name)
@@ -16,12 +16,14 @@ def connect_sql(db_name):
         print e
     return db_obj
 
+#数据库关闭
 def close_sql(db):
     try:
         db.close()
     except Exception as e :
         print e
 
+#创建表
 def creat_table(db,sql,table_name):
     cursor = db.cursor()
     try:
@@ -31,6 +33,7 @@ def creat_table(db,sql,table_name):
         print e
         db.rollback()
 
+#根据返回值（0,1）判定某表是否存在
 def table_exist(db,tablename,database_name):
     cursor = db.cursor()
     try:
@@ -40,6 +43,7 @@ def table_exist(db,tablename,database_name):
     except Exception as e:
         print e
 
+#数据库查询
 def sql_select (db,sql):
     cursor = db.cursor()
     try:
@@ -49,6 +53,7 @@ def sql_select (db,sql):
     except Exception as e:
         print e
 
+#单条插入（not userd）
 def sql_insert_singel(db,sql):
     cursor = db.cursor()
     try:
@@ -58,6 +63,7 @@ def sql_insert_singel(db,sql):
         print e
         db.rollback()
 
+#批量导入
 def sql_insert_many(db,sql,values):
     cursor = db.cursor()
     try:

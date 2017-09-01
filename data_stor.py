@@ -2,7 +2,7 @@
 """
 Created on Tue Jul  4 11:36:45 2017
 
-@author: d_xuan
+@author: ding_x
 """
 import os
 import json
@@ -10,6 +10,11 @@ from utils.mysql_utils import *
 File_list = []
 
 def get_file_list(data_path):
+    '''
+    迭代获取指定路径下所有文件
+    :param data_path:
+    :return:
+    '''
     if os.path.isfile(data_path):
         File_list.append(data_path)
         #print data_path
@@ -20,6 +25,12 @@ def get_file_list(data_path):
             get_file_list(new_dir)
 
 def read_file (data_path,grabdate):
+    '''
+    json数据的解析，提取所需字段
+    :param data_path:
+    :param grabdate:
+    :return:
+    '''
     print 'extracting '+ data_path
     data_file = open(data_path)
     content = data_file.readlines()
@@ -54,6 +65,12 @@ def read_file (data_path,grabdate):
     return flickr_list
 
 def stor_data_by_month(file_list,city_name):
+    '''
+    将从文件中提取出的数据列表，批量存入数据库
+    :param file_list:
+    :param city_name:
+    :return:
+    '''
     db = connect_sql("vgiwork")
     for f in file_list :
         f_s = f.split("data")[1].split(city_name)
@@ -84,13 +101,13 @@ def stor_data_by_month(file_list,city_name):
         if table_exist(db,table_name,"vgiwork") ==0:
             creat_table(db, creat_sql, table_name)
         flickr_list = read_file(f,day)
-
-        index = len(flickr_list)/3000
+        patch_num = 3000 #设置单次批量导入的数量
+        index = len(flickr_list)/patch_num
         for i in range(index):
             print '---- start insert '+f+' part '+str(i)+' ----'
-            sql_insert_many(db,insert_sql,flickr_list[i*3000:(i+1)*3000])
+            sql_insert_many(db,insert_sql,flickr_list[i*patch_num:(i+1)*patch_num])
         print '---- start insert ' + f + ' part ' + str(index) + ' ----'
-        sql_insert_many(db, insert_sql, flickr_list[(i + 1) * 3000:])
+        sql_insert_many(db, insert_sql, flickr_list[(i + 1) * patch_num:])
     close_sql(db)
 
 
