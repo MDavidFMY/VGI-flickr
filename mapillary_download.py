@@ -8,7 +8,6 @@ import argparse
 MAPILLARY_API_IM_SEARCH_URL = 'https://a.mapillary.com/v1/im/search?'
 BASE_DIR = 'downloaded/'
 
-
 '''
 Script to download images using the Mapillary image search API.
 Downloads images inside a rect (min_lat, max_lat, min_lon, max_lon).

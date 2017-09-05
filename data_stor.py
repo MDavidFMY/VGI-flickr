@@ -113,7 +113,7 @@ def stor_data_by_month(file_list,city_name):
 
 
 if __name__ == '__main__':
-    get_file_list('C:\\Users\\xgxy03\\Desktop\\data\\2016\\last')
+    get_file_list('C:\\Users\\xgxy03\\Desktop\\data\\2016')
     stor_data_by_month(File_list,"london")
 
 

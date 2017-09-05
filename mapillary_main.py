@@ -5,15 +5,15 @@ Created on Tue Jul  4 11:36:45 2017
 @author: ding_x
 """
 import flickrapi
-
+import urllib,urllib2
 from utils.grab_utils import *
+url = 'https://a.mapillary.com/v3/images?client_id=ekcyWUdPNnkwSlRrMThjMVhWTFV0dzphYjRiMmE0MzM3YzQzMTAy&closeto=%s&start_time=%s&end_time=%s&radius=5566'
 
 '''
 调用flickr api的search接口，实现flickr的自动抓取
 '''
-api_key = '5b3bf647e7b5ad46255ba8b8ebad6a4e'
-api_secret= 'dc6af0c6dad6c128'
-flickr=flickrapi.FlickrAPI(api_key,api_secret,cache=True,format='json')
+client_id='ekcyWUdPNnkwSlRrMThjMVhWTFV0dzphYjRiMmE0MzM3YzQzMTAy'
+
 stor_path = "C:\\Users\\xgxy03\\Desktop\\data"
 
 
@@ -49,10 +49,11 @@ def grab_date_data(city_name,last_days):
             pages = 1
             try:
                 while page_index <= pages:
-                    json_obj = flickr.photos.search(page=page_index, perpage=200, radius=5.566, has_geo=1,
-                                                    lat=coordinate[0], lon=coordinate[1], min_upload_date=min_time,
-                                                    max_upload_date=max_time,
-                                                    extras='description,date_upload,owner_name,last_update,geo,tags,machine_tags,url_m,url_c,url_o')
+                    params = urllib.urlencode(zip(['closeto', 'start_time', 'end_time', 'radius', ],
+                                                  [min_lat, max_lat, min_lon, max_lon, max_results]))
+                    query = urllib2.urlopen(MAPILLARY_API_IM_SEARCH_URL + params).read()
+                    query = json.loads(query)
+
                     coor = str(coordinate[0])[:5] + " " + str(coordinate[1])[:5]
                     print u"抓取 %s 坐标为 : %s 的第 %d 页数据" % (city_name,coor,page_index)
                     page_index += 1

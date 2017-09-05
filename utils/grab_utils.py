@@ -67,7 +67,7 @@ def get_grab_date():
     从日期配置文件中读取抓取日期
     :return:
     '''
-    date = {'start_time':'','year':'','month':'','day':''}
+    date = {'start_time':'','year':'','month':'','day':'','iso_time':''}
     date_file = open(config_path + 'date_config.json')
     try:
         date_config = date_file.read()
@@ -80,25 +80,25 @@ def get_grab_date():
     date["year"] = str(dt.year)
     date["month"] = str(dt.month)
     date["day"] = str(dt.day)
+    date["iso_time"] = str(dt.isoformat())
     return date
 
 
-def convert_grab_date(start_time):
+def convert_grab_date(start_time,format):
     '''
-    将日期字符串转化为对应抓取unix时间戳列表
+    将日期字符串转化为对应抓取unix（ISO 8601）时间戳列表
     :param start_time:
     :return:
     '''
-    unix_time = []
+    covert_time = []
     min_date = time.mktime(time.strptime(start_time, datetime_format))
-    unix_time.append(int(min_date))
+    covert_time.append(int(min_date))
     day = datetime.datetime.strptime(start_time, datetime_format)
     delta = datetime.timedelta(days=1)
     n_day = day + delta
     max_date = time.mktime(n_day.timetuple())
-    unix_time.append(int(max_date))
-    return unix_time
-
+    covert_time.append(int(max_date))
+    return covert_time
 
 def add_one_day():
     '''
@@ -158,7 +158,6 @@ def write_config():
 # 测试类
 if __name__=="__main__":
     write_config()
-
 
 
 
