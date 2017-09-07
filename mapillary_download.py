@@ -20,7 +20,7 @@ def create_dirs(base_path):
         pass
     os.mkdir(base_path)
 
-
+#123456
 def query_search_api(min_lat, max_lat, min_lon, max_lon, max_results):
     '''
     Send query to the search API and get dict with image data.
