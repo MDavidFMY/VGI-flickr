@@ -45,44 +45,37 @@ def grab_date_data(city_name,last_days):
             coordinate = city_coor_list[coor_index]
             print u'----抓取%s第 %d 区域----'% (city_name,coor_index)
             err_num = 0
-            page_index = 1
-            pages = 1
-            try:
-                while page_index <= pages:
-                    params = urllib.urlencode(zip(['closeto', 'start_time', 'end_time', 'radius', ],
-                                                  [min_lat, max_lat, min_lon, max_lon, max_results]))
-                    query = urllib2.urlopen(MAPILLARY_API_IM_SEARCH_URL + params).read()
-                    query = json.loads(query)
-
-                    coor = str(coordinate[0])[:5] + " " + str(coordinate[1])[:5]
-                    print u"抓取 %s 坐标为 : %s 的第 %d 页数据" % (city_name,coor,page_index)
-                    page_index += 1
-                    dic = json.loads(json_obj)
-                    if dic["stat"] == "ok":
-                        pages = int(dic["photos"]["pages"])
-                        total = int(dic["photos"]["total"])
-                        photos = dic["photos"]["photo"]
-                        # <-----抓取失败，重新抓取该区域该页面----->
-                        if total == 0:
-                            print u'<-----取空----->'
-                            page_index -= 1
-                            err_num += 1
-                            if err_num > 3:
-                                break
-                            else:
-                                continue
-                        # <-----抓取成功----->
+            params = urllib.urlencode(zip(['closeto', 'start_time', 'end_time', 'radius', 'lookat'],
+            query = urllib2.urlopen(MAPILLARY_API_IM_SEARCH_URL + params).read()
+            query = json.loads(query)
+            coor = str(coordinate[0])[:5] + " " + str(coordinate[1])[:5]
+            print u"抓取 %s 坐标为 : %s 的第 %d 页数据" % (city_name,coor,page_index)
+            dic = json.loads(json_obj)
+            if dic["stat"] == "ok":
+                    pages = int(dic["photos"]["pages"])
+                    total = int(dic["photos"]["total"])
+                    photos = dic["photos"]["photo"]
+                    # <-----抓取失败，重新抓取该区域该页面----->
+                    if total == 0:
+                        print u'<-----取空----->'
+                        page_index -= 1
+                        err_num += 1
+                        if err_num > 3:
+                            break
                         else:
-                            # <-----页面只有一页，直接跳转下一区域----->
-                            if pages == 1:
-                                sto_photos(photos, filename)
-                                break
-                            else:
-                                sto_photos(photos, filename)
+                            continue
+                    # <-----抓取成功----->
                     else:
-                        print dic["stat"]
-                print u'该区域共 %d 条数据' % (total)
-                data_count += total
+                        # <-----页面只有一页，直接跳转下一区域----->
+                        if pages == 1:
+                            sto_photos(photos, filename)
+                            break
+                        else:
+                            sto_photos(photos, filename)
+            else:
+                    print dic["stat"]
+            print u'该区域共 %d 条数据' % (total)
+            data_count += total
             except Exception as e:
                 print e
         data_static(city_name,date["start_time"].split(" ")[0],data_count)

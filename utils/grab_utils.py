@@ -84,20 +84,28 @@ def get_grab_date():
     return date
 
 
-def convert_grab_date(start_time,format):
+def convert_grab_date(start_time,format_c):
     '''
     将日期字符串转化为对应抓取unix（ISO 8601）时间戳列表
     :param start_time:
     :return:
     '''
     covert_time = []
-    min_date = time.mktime(time.strptime(start_time, datetime_format))
-    covert_time.append(int(min_date))
-    day = datetime.datetime.strptime(start_time, datetime_format)
-    delta = datetime.timedelta(days=1)
-    n_day = day + delta
-    max_date = time.mktime(n_day.timetuple())
-    covert_time.append(int(max_date))
+    if format_c == "unix":
+        min_date = time.mktime(time.strptime(start_time, datetime_format))
+        covert_time.append(int(min_date))
+        day = datetime.datetime.strptime(start_time, datetime_format)
+        delta = datetime.timedelta(days=1)
+        n_day = day + delta
+        max_date = time.mktime(n_day.timetuple())
+        covert_time.append(int(max_date))
+    elif format_c == "ISO":
+        day = datetime.datetime.strptime(start_time, datetime_format)
+        covert_time.append(day.isoformat())
+        delta = datetime.timedelta(days=1)
+        n_day = day + delta
+        covert_time.append(n_day.isoformat())
+
     return covert_time
 
 def add_one_day():
@@ -157,8 +165,8 @@ def write_config():
 
 # 测试类
 if __name__=="__main__":
-    write_config()
-
+    #write_config()
+    convert_grab_date()
 
 
 
