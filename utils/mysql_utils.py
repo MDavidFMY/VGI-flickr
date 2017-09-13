@@ -10,11 +10,11 @@ db = ''
 #数据库连接
 def connect_sql(db_name):
     try:
-        db_obj = MySQLdb.connect("localhost", "root", "123456", db_name)
+        db_obj = MySQLdb.connect("localhost", "root", "1234", db_name)
         print 'connected'
+        return db_obj
     except Exception as e:
         print e
-    return db_obj
 
 #数据库关闭
 def close_sql(db):

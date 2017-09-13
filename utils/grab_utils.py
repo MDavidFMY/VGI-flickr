@@ -10,7 +10,7 @@ import MySQLdb
 import time
 import datetime
 
-config_path = "../config/"
+config_path = "C:/Users/Administrator/PycharmProjects/VGI-flickr/config/"
 datetime_format = '%Y-%m-%d %H:%M:%S'
 
 
@@ -84,7 +84,7 @@ def get_grab_date():
     return date
 
 
-def convert_grab_date(start_time,format):
+def convert_grab_date(start_time):
     '''
     将日期字符串转化为对应抓取unix（ISO 8601）时间戳列表
     :param start_time:
@@ -109,7 +109,7 @@ def add_one_day():
     try:
         date_config = date_file.read()
         date_dic = json.loads(date_config)
-        str_datetime = json.loads(date_config)["start_time"]
+        str_datetime = date_dic["start_time"]
         day = datetime.datetime.strptime(str_datetime,datetime_format)
         delta = datetime.timedelta(days =1)
         n_day = day+delta
@@ -156,8 +156,12 @@ def write_config():
     storfile.close()
 
 # 测试类
+
 if __name__=="__main__":
-    write_config()
+    #write_config()
+    load_city_area("paris")
+
+
 
 
 

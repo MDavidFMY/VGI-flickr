@@ -5,16 +5,19 @@ Created on Tue Jul  4 11:36:45 2017
 @author: ding_x
 """
 import flickrapi
-import urllib,urllib2
-from utils.grab_utils import *
-url = 'https://a.mapillary.com/v3/images?client_id=ekcyWUdPNnkwSlRrMThjMVhWTFV0dzphYjRiMmE0MzM3YzQzMTAy&closeto=%s&start_time=%s&end_time=%s&radius=5566'
+import urllib
+import urllib2
 
+from utils.grab_utils import *
+
+url = 'https://a.mapillary.com/v3/images?client_id=ekcyWUdPNnkwSlRrMThjMVhWTFV0dzphYjRiMmE0MzM3YzQzMTAy&closeto=%s&start_time=%s&end_time=%s'
+MAPILLARY_API_IM_SEARCH_URL = 'https://a.mapillary.com/v3/images?client_id=ekcyWUdPNnkwSlRrMThjMVhWTFV0dzphYjRiMmE0MzM3YzQzMTAy&'
 '''
 调用flickr api的search接口，实现flickr的自动抓取
 '''
 client_id='ekcyWUdPNnkwSlRrMThjMVhWTFV0dzphYjRiMmE0MzM3YzQzMTAy'
 
-stor_path = "C:\\Users\\xgxy03\\Desktop\\data"
+stor_path = "C:\\Users\\Administrator\\Desktop\\data"
 
 
 
@@ -26,6 +29,7 @@ def grab_date_data(city_name,last_days):
     :return:
     '''
     city_coor_list = load_city_area(city_name)
+    #min_lat = float(str_list[1])
     while last_days >0 :
         data_count = 0
         date = get_grab_date()
@@ -50,7 +54,7 @@ def grab_date_data(city_name,last_days):
             try:
                 while page_index <= pages:
                     params = urllib.urlencode(zip(['closeto', 'start_time', 'end_time', 'radius', ],
-                                                  [min_lat, max_lat, min_lon, max_lon, max_results]))
+                                                  [min_lat, min_time, max_time, max_lon, max_results]))
                     query = urllib2.urlopen(MAPILLARY_API_IM_SEARCH_URL + params).read()
                     query = json.loads(query)
 
@@ -92,6 +96,9 @@ def grab_date_data(city_name,last_days):
 if __name__=="__main__":
 
     # city_name = raw_input("请输入所需要下载的城市名称：")
+
     city_name = 'london'
     last_days = 2
     grab_date_data(city_name,last_days)
+
+    #load_city_area("paris")
