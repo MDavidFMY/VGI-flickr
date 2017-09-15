@@ -14,7 +14,7 @@ url = 'https://a.mapillary.com/v3/images?client_id=ekcyWUdPNnkwSlRrMThjMVhWTFV0d
 '''
 client_id='ekcyWUdPNnkwSlRrMThjMVhWTFV0dzphYjRiMmE0MzM3YzQzMTAy'
 
-stor_path = "C:\\Users\\xgxy03\\Desktop\\data"
+stor_path = "E:\\VGI_Data"
 
 
 
@@ -25,27 +25,29 @@ def grab_date_data(city_name,last_days):
     :param last_days:
     :return:
     '''
+    add_one_day()
     city_coor_list = load_city_area(city_name)
+    '''
     while last_days >0 :
         data_count = 0
         date = get_grab_date()
         print u'==============正在抓取日期：%s ==============' % (date["start_time"].split(" ")[0])
-        datapath =  stor_path + '\\' + date['year'] + '\\' + date['month'] + '\\' + date['day']
+        datapath =  os.path.join(stor_path ,date['year'] ,date['month'],date['day'])
         if os.path.isdir(datapath):
-            filename =datapath + '\\' +city_name + '.txt'
+            filename =os.path.join(datapath ,city_name + '.txt')
         else:
             os.makedirs(datapath)
-            filename = datapath + '\\' + city_name + '.txt'
+            filename = os.path.join(datapath, city_name + '.txt')
 
         start_time = date["start_time"]
-        min_time = convert_grab_date(start_time)[0]
-        max_time =  convert_grab_date(start_time)[1]
+        min_time = convert_grab_date(start_time,'ISO')[0]
+        max_time =  convert_grab_date(start_time,'ISO')[1]
         coor_index = 0
         for coor_index in range(len(city_coor_list)):
             coordinate = city_coor_list[coor_index]
             print u'----抓取%s第 %d 区域----'% (city_name,coor_index)
             err_num = 0
-            params = urllib.urlencode(zip(['closeto', 'start_time', 'end_time', 'radius', 'lookat'],
+            params = urllib.urlencode(zip(['closeto', 'start_time', 'end_time', 'radius', 'lookat']))  #closeto--longitude,latitude .
             query = urllib2.urlopen(MAPILLARY_API_IM_SEARCH_URL + params).read()
             query = json.loads(query)
             coor = str(coordinate[0])[:5] + " " + str(coordinate[1])[:5]
@@ -81,7 +83,7 @@ def grab_date_data(city_name,last_days):
         data_static(city_name,date["start_time"].split(" ")[0],data_count)
         last_days -= 1
         add_one_day()
-
+        '''
 if __name__=="__main__":
 
     # city_name = raw_input("请输入所需要下载的城市名称：")

@@ -93,12 +93,13 @@ class NPExtractor(object):
 
 
 # Main method, just run "python np_extractor.py"
-def main():
-    sentence = "birthday england liz 40th essex barking upneybaptistchurch"
+def nltk_main(sentence):
     np_extractor = NPExtractor(sentence)
     result = np_extractor.extract()
-    print "This sentence is about: %s" % ", ".join(result)
+    # print "This sentence is about: %s" % ", ".join(result)
+    print result
+    return result
 
 
 if __name__ == '__main__':
-    main()
+    nltk_main("africa from london centre zimbabwe linos marimba batanai wengara")

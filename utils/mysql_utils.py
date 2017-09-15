@@ -10,12 +10,11 @@ db = ''
 #数据库连接
 def connect_sql(db_name):
     try:
-        db_obj = MySQLdb.connect("localhost", "root", "123456", db_name)
+        db_obj = MySQLdb.connect("localhost", "root", "1234", db_name)
         print 'connected'
     except Exception as e:
         print e
     return db_obj
-
 #数据库关闭
 def close_sql(db):
     try:
@@ -37,7 +36,7 @@ def creat_table(db,sql,table_name):
 def table_exist(db,tablename,database_name):
     cursor = db.cursor()
     try:
-        cursor.execute("SELECT COUNT(*) as num FROM information_schema.TABLES WHERE TABLE_NAME='"+tablename+"' and TABLE_SCHEMA='"+database_name+"'")
+        cursor.execute("SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_NAME='"+tablename+"' and TABLE_SCHEMA='"+database_name+"'")
         result = cursor.fetchone()
         return result[0]
     except Exception as e:
@@ -75,8 +74,6 @@ def sql_insert_many(db,sql,values):
         db.rollback()
 
 if __name__ == "__main__":
-    db = connect_sql("vgiwork")
-    i =  table_exist(db,'london_2016_1',"vgiwork")
-    print i
+    db = connect_sql("shpdb")
 
 

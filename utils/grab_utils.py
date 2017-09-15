@@ -10,7 +10,7 @@ import MySQLdb
 import time
 import datetime
 
-config_path = "../config/"
+config_path = "./config/"
 datetime_format = '%Y-%m-%d %H:%M:%S'
 
 
@@ -158,16 +158,17 @@ def data_static(city_name,date,count):
     storfile.close()
 
 def write_config():
-    date = {"Client_ID":"ekcyWUdPNnkwSlRrMThjMVhWTFV0dzphYjRiMmE0MzM3YzQzMTAy","Client Secret":"MWQ2MWViYjBmZTRlNGJhNmYxZTZhYjI2MjczN2UzMDM="}
-    storfile = file(config_path+"mapillary_token.txt","w+")
+    #date = {"Client_ID":"ekcyWUdPNnkwSlRrMThjMVhWTFV0dzphYjRiMmE0MzM3YzQzMTAy","Client Secret":"MWQ2MWViYjBmZTRlNGJhNmYxZTZhYjI2MjczN2UzMDM="}
+    date = {"start_time": "2016-01-01 00:00:00"}
+    storfile = file(config_path+"date_config.json","w+")
     storfile.write(json.dumps(date))
     storfile.close()
 
 # 测试类
 if __name__=="__main__":
-    #write_config()
-    convert_grab_date()
-
+    write_config()
+    #print convert_grab_date('2007-01-01 00:00:00',"ISO")
+    #load_city_area('paris')
 
 
 

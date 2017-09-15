@@ -14,7 +14,7 @@ from utils.grab_utils import *
 api_key = '5b3bf647e7b5ad46255ba8b8ebad6a4e'
 api_secret= 'dc6af0c6dad6c128'
 flickr=flickrapi.FlickrAPI(api_key,api_secret,cache=True,format='json')
-stor_path = "C:\\Users\\xgxy03\\Desktop\\data"
+stor_path = "E:\\VGI_Data"
 
 
 
@@ -30,16 +30,16 @@ def grab_date_data(city_name,last_days):
         data_count = 0
         date = get_grab_date()
         print u'==============正在抓取日期：%s ==============' % (date["start_time"].split(" ")[0])
-        datapath =  stor_path + '\\' + date['year'] + '\\' + date['month'] + '\\' + date['day']
+        datapath = os.path.join(stor_path, date['year'], date['month'], date['day'])
         if os.path.isdir(datapath):
-            filename =datapath + '\\' +city_name + '.txt'
+            filename = os.path.join(datapath, city_name + '.txt')
         else:
             os.makedirs(datapath)
-            filename = datapath + '\\' + city_name + '.txt'
+            filename = os.path.join(datapath, city_name + '.txt')
 
         start_time = date["start_time"]
-        min_time = convert_grab_date(start_time)[0]
-        max_time =  convert_grab_date(start_time)[1]
+        min_time = convert_grab_date(start_time,"unix")[0]
+        max_time =  convert_grab_date(start_time,"unix")[1]
         coor_index = 0
         for coor_index in range(len(city_coor_list)):
             coordinate = city_coor_list[coor_index]
@@ -63,9 +63,9 @@ def grab_date_data(city_name,last_days):
                         photos = dic["photos"]["photo"]
                         # <-----抓取失败，重新抓取该区域该页面----->
                         if total == 0:
-                            print u'<-----取空----->'
                             page_index -= 1
                             err_num += 1
+                            print u'<-----取空 %d 次----->' % (err_num)
                             if err_num > 3:
                                 break
                             else:
@@ -89,8 +89,7 @@ def grab_date_data(city_name,last_days):
         add_one_day()
 
 if __name__=="__main__":
-
     # city_name = raw_input("请输入所需要下载的城市名称：")
-    city_name = 'london'
-    last_days = 2
+    city_name = 'paris'
+    last_days = 365
     grab_date_data(city_name,last_days)
