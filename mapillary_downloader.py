@@ -21,7 +21,7 @@ def get_coor_list(lat_min,lat_max,lon_min,lon_max):
 
 def get_city_coor(city):
     #city = 'london'
-    handle = open('C:\Users\Administrator\PycharmProjects\VGI-flickr\config\city_list.txt')
+    handle = open('/Users/mckee/PycharmProjects/VGI-flickr/config/city_list.txt')
     for line in handle:
         if '\xef' in line:
             line = line.replace('\xef\xbb\xbf','')
@@ -33,7 +33,7 @@ def get_city_coor(city):
     return coor_list
 
 def get_start_date():
-    date_file = open('C:\Users\Administrator\PycharmProjects\VGI-flickr\config\date_config.json')
+    date_file = open('/Users/mckee/PycharmProjects/VGI-flickr/config/date_config.json')
     start_time  = date_file.read()
     start_time = json.loads(start_time)
     start_time = start_time['start_time']
@@ -79,7 +79,7 @@ def add_one_week(start_day,day_delta):
     refresh = {}
     refresh['start_time'] = next_day
     #print refresh
-    handle = open('C:\Users\Administrator\PycharmProjects\VGI-flickr\config\date_config.json','w+')
+    handle = open('/Users/mckee/PycharmProjects/VGI-flickr/config/date_config.json','w+')
     handle.write(json.dumps(refresh))
     handle.close()
 
@@ -94,12 +94,12 @@ if __name__ == '__main__':
     while last_weeks > 0:
         date = get_start_date()
         print u'==============正在抓取日期：%s ==============' % (date['start_time'].split(' ')[0])
-        datapath = 'C:\Users\Administrator\Desktop\data\\' + date['year'] + '\\' + date['month'] + '\\' + date['day']
+        datapath = '/Users/mckee/PycharmProjects/VGI-flickr/data/' + date['year'] + '/' + date['month'] + '/' + date['day']
         if os.path.isdir(datapath):
-            filename = datapath + '\\' + city + '.txt'
+            filename = datapath + '/' + city + '.txt'
         else:
             os.makedirs(datapath)
-            filename = datapath + '\\' + city + '.txt'
+            filename = datapath + '/' + city + '.txt'
         download_time = get_download_time(date,day_delta)
         print download_time
         start_time = download_time[0].isoformat()
