@@ -9,7 +9,7 @@ import json
 import os
 import requests
 from utils.mysql_utils import *
-storpath = 'E:\\VGI_Data\\Flickr_pic'
+storpath = 'D:\\VGI_Data\\Flickr_pic'
 def geturl():
     result_dic = {}
     db = connect_sql('vgiwork')
