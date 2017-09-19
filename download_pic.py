@@ -14,7 +14,7 @@ def geturl():
     result_dic = {}
     db = connect_sql('vgiwork')
     month = 1
-    while month <= 1:
+    while month <= 12:
         url_temp_list = []
         table_name = 'london_2016_%d' % month
         selectsql = "select url_m from %s" % table_name
@@ -42,11 +42,14 @@ def url_download(result_dic):
                 else:
                     os.makedirs(datapath)
                     filename = os.path.join(datapath, pic_name)
-                print 'downloading %s' % pic_name
-                img = requests.get(url)
-                f = open(filename,"wb")
-                f.write(img.content)
-                f.close()
+                if os.path.exists(filename):
+                    print 'aready download'
+                else:
+                    print 'downloading %s' % pic_name
+                    img = requests.get(url)
+                    f = open(filename,"wb")
+                    f.write(img.content)
+                    f.close()
             except Exception as e:
                 print e
 
