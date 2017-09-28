@@ -13,8 +13,8 @@ storpath = 'D:\\VGI_Data\\Flickr_pic'
 def geturl():
     result_dic = {}
     db = connect_sql('vgiwork')
-    month = 1
-    while month <= 12:
+    month = 4
+    while month <= 6:
         url_temp_list = []
         table_name = 'london_2016_%d' % month
         selectsql = "select url_m from %s" % table_name

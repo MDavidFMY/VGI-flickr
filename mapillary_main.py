@@ -4,10 +4,10 @@ Created on Tue Jul  4 11:36:45 2017
 
 @author: ding_x
 """
-import flickrapi
 import urllib,urllib2
 from utils.grab_utils import *
-url = 'https://a.mapillary.com/v3/images?client_id=ekcyWUdPNnkwSlRrMThjMVhWTFV0dzphYjRiMmE0MzM3YzQzMTAy&closeto=%s&start_time=%s&end_time=%s&radius=5566'
+url = 'https://a.mapillary.com/v3/images?client_id=ekcyWUdPNnkwSlRrMThjMVhWTFV0dzphYjRiMmE0MzM3YzQzMTAy&closeto={}&lookat={}&start_time={}&end_time={}&radius=5566'
+pic_url = 'https://d1cuyjsrcm0gby.cloudfront.net/<IMAGE_KEY>/thumb-640.jpg'
 
 '''
 调用flickr api的search接口，实现flickr的自动抓取
@@ -20,7 +20,7 @@ stor_path = "E:\\VGI_Data"
 
 def grab_date_data(city_name,last_days):
     '''
-    根据城市名，自动抓取该城市的指定日期的flickr数据
+    根据城市名，自动抓取该城市的指定日期的mapillary数据
     :param city_name:
     :param last_days:
     :return:
@@ -85,8 +85,7 @@ def grab_date_data(city_name,last_days):
         add_one_day()
         '''
 if __name__=="__main__":
-
-    # city_name = raw_input("请输入所需要下载的城市名称：")
+    city_name = raw_input("请输入所需要下载的城市名称：")
     city_name = 'london'
     last_days = 2
     grab_date_data(city_name,last_days)

@@ -7,7 +7,7 @@ Created on 2017/9/7 10:31
 from utils.nltkwork import *
 import os
 
-datapath = 'C:\\Users\\d_x\\Desktop\\Flickr_contents'
+datapath = 'C:\\Users\\VGI-Group\\Desktop\\test'
 storpath = 'C:\\Users\\d_x\\Desktop\\Flickr_contents'
 def getContent(file_name):
     files = open(os.path.join(datapath,file_name))
@@ -43,6 +43,7 @@ def storresult(result):
 
 if __name__=="__main__":
     getContent('test.txt')
+
     #nltk_main("2002 london dorothy cafe african south band jazz dec masuka")
 
 
