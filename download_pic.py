@@ -9,7 +9,8 @@ import json
 import os
 import requests
 from utils.mysql_utils import *
-storpath = 'D:\\VGI_Data\\Flickr_pic'
+#storpath = 'D:\\VGI_Data\\Flickr_pic'
+storpath = 'E:\\building\\origin'
 def geturl():
     result_dic = {}
     db = connect_sql('vgiwork')
@@ -26,6 +27,7 @@ def geturl():
         result_dic[table_name] = url_temp_list
         month += 1
     return result_dic
+
 
 def url_download(result_dic):
     for table_name in result_dic:
