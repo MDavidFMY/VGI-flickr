@@ -97,7 +97,7 @@ def nltk_main(sentence):
     np_extractor = NPExtractor(sentence)
     result = np_extractor.extract()
     # print "This sentence is about: %s" % ", ".join(result)
-    print result
+    #print result
     return result
 
 
