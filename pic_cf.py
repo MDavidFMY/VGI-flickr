@@ -17,11 +17,12 @@ caffe_root = '/home/ding_x/caffe/caffe-master/'
 model_root = '/home/ding_x/caffe/caffe-master/model/'
 
 
-data_root = '/media/ding_x/软件/VGI_Data/Flickr_pic/london/2016/1/'
-test_root = '/home/ding_x/caffe/1/'
+data_path = '/media/ding_x/Seagate Backup Plus Drive/VGI_Data/Flickr_pic/london/2016/'
+
+test_root = '/home/ding_x/caffe/2/'
 
 
-def caffe_cf(used_labels,few_building):
+def caffe_cf(data_root,used_labels,few_building):
     caffe.set_mode_gpu()
     model_def = model_root + 'deploy_vgg16_places365.prototxt'
     model_weights = model_root + 'vgg16_places365.caffemodel'
@@ -53,13 +54,15 @@ def caffe_cf(used_labels,few_building):
 
 
     result_list = []
-    pic_list = os.listdir(test_root)
+    pic_list = os.listdir(data_root)
     pic_file_list = []
     for pic in pic_list:
         if '.jpg' in pic:
             pic_file_list.append(pic)
+
+    total_num = len(pic_list)
     for pic in pic_file_list:
-        pic_path = os.path.join(test_root, pic)
+        pic_path = os.path.join(data_root, pic)
         try:
             image = caffe.io.load_image(pic_path)
             transformed_image = transformer.preprocess('data', image)
@@ -81,31 +84,32 @@ def caffe_cf(used_labels,few_building):
         labels = np.loadtxt(labels_file, str, delimiter='\t')
         label_name = labels[output_prob.argmax()].split(' ')[0]
         print label_name
-
+        total_num -= 1
+        print 'remain %d' % total_num
         # stor photos by their category name
         label_name_list = label_name.split('/')
         if len(label_name_list)>3:
             label_name = label_name_list[2] + "-" + label_name_list[3]
-            movefile(label_name, used_labels, few_building, pic_path)
+            movefile(data_root,label_name, used_labels, few_building, pic_path)
             # print 'output label:', label_name
             # result_list.append(label_name)
         else:
             label_name = label_name_list[2]
-            newpath = os.path.join(test_root, label_name)
-            movefile(label_name, used_labels, few_building, pic_path)
+            newpath = os.path.join(data_root, label_name)
+            movefile(data_root,label_name, used_labels, few_building, pic_path)
             # print 'output label:', label_name
             # result_list.append(label_name)
     #return result_list
-def movefile(label_name,used_labels,few_building,oldpath):
+def movefile(data_root,label_name,used_labels,few_building,oldpath):
     if label_name in used_labels:
-        newpath = os.path.join(test_root,'used_labels',label_name)
+        newpath = os.path.join(data_root,'used_labels',label_name)
         if os.path.isdir(newpath):
             shutil.move(oldpath, newpath)
         else:
             os.makedirs(newpath)
             shutil.move(oldpath, newpath)
     elif label_name in few_building:
-        newpath = os.path.join(test_root,'few_building',label_name)
+        newpath = os.path.join(data_root,'few_building',label_name)
         if os.path.isdir(newpath):
             shutil.move(oldpath, newpath)
         else:
@@ -152,7 +156,12 @@ if __name__ == "__main__":
     for i in used_labels:
         i = i.strip('\n')
         new_used.append(i)
-    caffe_cf(new_used,new_few)
+    j=2
+    while j <=12:
+        data_root = os.path.join(data_path,str(j))
+        print data_root
+        caffe_cf(data_root,new_used,new_few)
+        j += 1
 
     # get_file_list('/home/ding_x/caffe/testdata/')
     # for oldpath in File_list:

@@ -10,12 +10,12 @@ import os
 import requests
 from utils.mysql_utils import *
 #storpath = 'D:\\VGI_Data\\Flickr_pic'
-storpath = 'E:\\building\\origin'
+storpath = '/media/ding_x/Seagate Backup Plus Drive/VGI_Data/Flickr_pic/'
 def geturl():
     result_dic = {}
     db = connect_sql('vgiwork')
-    month = 4
-    while month <= 6:
+    month = 1
+    while month <= 12:
         url_temp_list = []
         table_name = 'london_2016_%d' % month
         selectsql = "select url_m from %s" % table_name
