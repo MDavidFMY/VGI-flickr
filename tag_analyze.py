@@ -50,17 +50,14 @@ def storresult(result):
 if __name__=="__main__":
     resultlist=[]
     getContent('london_tags.txt', resultlist)
-    # result = getKeyWord(resultlist)
-    # storresult(result)
+    result = getKeyWord(resultlist)
+    storresult(result)
 
-    f = file(os.path.join(datapath, 'result.txt'),'a+')
-    for i in resultlist:
-        f.write(i+' ')
-    f.close()
+    # f = file(os.path.join(datapath, 'result.txt'),'a+')
+    # for i in resultlist:
+    #     f.write(i+' ')
+    # f.close()
 
-
-
-    #nltk_main("2002 london dorothy cafe african south band jazz dec masuka")
 
 
 
