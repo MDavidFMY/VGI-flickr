@@ -93,6 +93,11 @@ def get_distance_hav(lat0, lng0, lat1, lng1):
     return distance
 
 def cal_building_buffer(buffer_range):
+    '''
+    获取osmbuilding周围的照片
+    :param buffer_range:
+    :return:
+    '''
     photos = readFile(r'D:\VGI_Data\building_pic.txt', 'dic')
     buildings = readFile(r'D:\OSMData\greater-london-latest-free.shp\building_with_name.txt', 'list')
     result_list = []
@@ -121,6 +126,53 @@ def cal_building_buffer(buffer_range):
         if  len(dic) != 0 :
             result_list.append(dic)
     storlist(result_list,r'D:\VGI_Data\osm-flickr_picname.txt')
+
+def cal_pic_buffer(buffer_range):
+    '''
+    获取照片周围的building,并比较tag是否符合building属性
+    :param buffer_range:
+    :return:
+    '''
+    photos = readFile(r'D:\VGI_Data\building_pic.txt', 'dic')
+    buildings = readFile(r'D:\OSMData\greater-london-latest-free.shp\building_with_name.txt', 'list')
+    name_list = []
+    type_list = []
+    buffer_range = float(buffer_range)
+    total = len(photos)
+    for photo in photos:
+        photo = photo.split(',')
+        picid = photo[0]
+        table_name = photo[1]
+        pic_name = table_name + "-" + picid
+        plat = float(photo[3])
+        plon = float(photo[2])
+        tags = photo[4]
+        #dic = {}
+        dic_type ={}
+        dic_name = {}
+        for building in buildings:
+            building = building.split(',')
+            osmid = building[0]
+            building_name = building[1].lower()
+            building_type = building[2].replace('_',' ')
+            blat = float(building[4])
+            blon = float(building[3])
+            bbox = getbbox(plon, plat, buffer_range)
+            if inbbox(blon,blat,bbox):
+                distance = get_distance_hav(plat,plon,blat,blon)
+                if distance <buffer_range:
+                    if building_type in tags and building_type!='':
+                        dic_type.setdefault(pic_name, []).append(osmid)
+                    if building_name in tags:
+                        dic_name.setdefault(pic_name, []).append(osmid)
+        total -= 1
+        print 'remain %d ' % total
+        if  len(dic_type) != 0 :
+            type_list.append(dic_type)
+        if  len(dic_name) != 0 :
+            name_list.append(dic_name)
+    storlist(type_list, r'D:\VGI_Data\type_in_tags.txt')
+    storlist(name_list, r'D:\VGI_Data\name_in_tags.txt')
 
 def getbbox(lon,lat,distance):
     tempcoor = distance*0.001/get_distance_hav(0.001,0.001,0.002,0.001)
@@ -155,13 +207,10 @@ def storPicbyOsmid(sourcepath,storpath):
 if __name__=="__main__":
     #formatjson(prov_file_path)
     # 计算缓冲区
-    # cal_building_buffer(200)
-    #按osmid储存pic
-    sourcepath = r'D:\VGI_Data\total_building'
-    storpath = r'D:\VGI_Data\osm-flickr'
-    storPicbyOsmid(sourcepath,storpath)
+    cal_pic_buffer(200)
 
-
-
-
+    # #按osmid储存pic
+    # sourcepath = r'D:\VGI_Data\total_building'
+    # storpath = r'D:\VGI_Data\osm-flickr'
+    # storPicbyOsmid(sourcepath,storpath)
 
