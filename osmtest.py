@@ -171,8 +171,8 @@ def cal_pic_buffer(buffer_range):
             type_list.append(dic_type)
         if  len(dic_name) != 0 :
             name_list.append(dic_name)
-    storlist(type_list, r'D:\VGI_Data\type_in_tags.txt')
-    storlist(name_list, r'D:\VGI_Data\name_in_tags.txt')
+    storlist(type_list, r'D:\VGI_Data\range 600\pic_buffer\type_in_tags.txt')
+    storlist(name_list, r'D:\VGI_Data\range 600\pic_buffer\name_in_tags.txt')
 
 def getbbox(lon,lat,distance):
     tempcoor = distance*0.001/get_distance_hav(0.001,0.001,0.002,0.001)
@@ -204,11 +204,13 @@ def storPicbyOsmid(sourcepath,storpath):
                     targetfile = os.path.join(newpath, pic + '.jpg')
                     shutil.copyfile(sourcefile, targetfile)
 
+
 if __name__=="__main__":
     #formatjson(prov_file_path)
     # 计算缓冲区
-    cal_pic_buffer(200)
+    cal_pic_buffer(600)
 
+    #cal_building_buffer(500)
     # #按osmid储存pic
     # sourcepath = r'D:\VGI_Data\total_building'
     # storpath = r'D:\VGI_Data\osm-flickr'
