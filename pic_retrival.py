@@ -59,16 +59,15 @@ def get_file_list(data_path):
             get_file_list(new_dir)
 
 def get_building_pic_tags(storfile):
-    get_file_list(r'D:\VGI_Data\building')
+    get_file_list(r'D:\VGI_Data\building_demo\Hot place\buckingham palace\sample')
     total_num = len(File_list)
     for i in File_list:
         nl = i.split('\\')
         pic_name = nl[len(nl) - 1]
         pic_info = getPicinfo(pic_name)
-        # tag = pic_info['tags']
-        # if tag != '':
-        #     storfile.write(tag + '\n')
-        storfile.write(str(pic_info)+'\n')
+        lat = pic_info['lat']
+        lon = pic_info['lon']
+        storfile.write(' '.join([pic_name,lon,lat]) + '\n')
         total_num -= 1
         print 'remain %d' % total_num
 if __name__ == "__main__":
@@ -77,8 +76,14 @@ if __name__ == "__main__":
     # url_download(dic)
 
     #获取图片tag,lat,lon等信息
-    storfile = file(r'D:\VGI_Data\building\building.txt','a+')
-    get_building_pic_tags(storfile)
+    storfile = file(r'D:\VGI_Data\building_demo\Hot place\buckingham palace\1\buckingham_0.txt','a+')
+    filelist = os.listdir(r'D:\VGI_Data\building_demo\Hot place\buckingham palace\sample')
+    for img in filelist:
+        if '.jpg' in img:
+            pic_info = getPicinfo(img)
+            lat = pic_info['lat']
+            lon = pic_info['lon']
+            storfile.write(' '.join([img, lon, lat]) + '\n')
     storfile.close()
 
 

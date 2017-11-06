@@ -120,13 +120,17 @@ def search_similar_img(target_imgs,sample_imgs,sample_path):
                     shutil.copyfile(sample_img,os.path.join(sample_path,sample_img_name))
 
 if __name__ == "__main__":
-    for path in [os.path.join(data_path, f,'target') for f in os.listdir(data_path)]:
-        print path
-        target_imgs = get_imlist(path)
-        sample_path = os.path.join(data_path,path.split('\\')[1],'sample')
-        sample_imgs = get_imlist(building_img_path)
-        search_similar_img(target_imgs,sample_imgs,sample_path)
-
+    # for path in [os.path.join(data_path, f,'target') for f in os.listdir(data_path)]:
+    #     print path
+    #     target_imgs = get_imlist(path)
+    #     sample_path = os.path.join(data_path,path.split('\\')[1],'sample')
+    #     sample_imgs = get_imlist(building_img_path)
+    #     search_similar_img(target_imgs,sample_imgs,sample_path)
+    path = r"D:\VGI_Data\building_demo\Hot place\Westminster\target"
+    target_imgs = get_imlist(path)
+    sample_path = r"D:\VGI_Data\building_demo\Hot place\Westminster\sample"
+    sample_imgs = get_imlist(building_img_path)
+    search_similar_img(target_imgs,sample_imgs,sample_path)
 
 
 
