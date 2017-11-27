@@ -127,6 +127,10 @@ if __name__ == '__main__':
                     image_URL = image_URL_L + key + image_URL_R
                     save_url(image_URL, filename)
                     # print image_URL+' '+str(lon)+','+str(lat)
+                    img = requests.get(image_URL)
+                    f = open('..\\test111.jpg','ab')
+                    f.write(img.content)
+                    f.close()
             else:
                 print '(%s,%s)----no features----' % (lat, lon)
         last_weeks -= 1
