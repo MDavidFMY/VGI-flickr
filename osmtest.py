@@ -7,6 +7,7 @@ Created on 2017/9/11 11:45
 from utils.mysql_utils import *
 from utils.grab_utils import *
 from utils.file_utils import *
+from pic_retrival import *
 import utils.shapefile as shapefile
 import os
 import shutil
@@ -47,7 +48,6 @@ def getBuildingCoor():
     shapes = shapefile.Reader(shp=shp_file, dbf=dbf_file)
     shapep = shapes.shapes()
     recordp = shapes.records()
-    shape_list = []
     f = file(os.path.join(stor_path,'london_building.txt'),'a+')
     total = len(recordp)
     for i in range(total):
@@ -203,16 +203,102 @@ def storPicbyOsmid(sourcepath,storpath):
                     os.makedirs(newpath)
                     targetfile = os.path.join(newpath, pic + '.jpg')
                     shutil.copyfile(sourcefile, targetfile)
+# 求方差
+def calDx(list,path,building):
+    length = len(list)
+    nlist = set(list)
+    Dx = 0.0
+    Ex = 0.0
+    distance_file = file(os.path.join(path,"distance.txt"), 'a+')
+    d1 = 0
+    d2 = 0
+    d3 = 0
+    d4 = 0
+    d5 = 0
+    d6 = 0
+    d7 = 0
+    for i in nlist:
+        n = list.count(i)
+        distance = i*10
+        distance_file.write("%s %d" %(distance,n)+'\n')
+        if distance>0 and distance<50:
+            d1 += n
+        elif distance>=50 and distance<100:
+            d2 +=n
+        elif distance>=100 and distance<150:
+            d3 +=n
+        elif distance>=150 and distance<200:
+            d4 +=n
+        elif distance>=200 and distance<250:
+            d5 +=n
+        elif distance>=250 and distance<300:
+            d6 +=n
+        elif distance>300 and distance<1000:
+            d7 +=n
 
+        p = float(n)/float(length)
+        Ex += i * p
+    for i in nlist:
+        n = list.count(i)
+        p = float(n) / float(length)
+        Dx = (i - Ex)*(i-Ex)*p
+    result_dic = {
+        "name":building,
+        "data": [
+            {"value": d7, "name": '>300'},
+            {"value": d6, "name": '250-300'},
+            {"value": d5, "name": '200-250'},
+            {"value": d4, "name": '150-200'},
+            {"value": d3, "name": '100-150'},
+            {"value": d2, "name": '50-100'},
+            {"value": d1, "name": '0-50'},
+        ]
+    }
+    # distance_file.write(str(result_dic)+'\n')
+    # distance_file.write("Ex: %f, Dx: %f" % (Ex,Dx))
+    # distance_file.close()
+    print result_dic
+
+def cal_min_dis(dic):  #buckingham palace 51.500833,-0.141944 Ex: 156.652688, Dx: 736.025349 # St Paul's Cathedral 51.513611,-0.098056 Ex: 112.665946, Dx: 818.898774 # British Museum  -.127146,51.519452 Ex: 107.052083, Dx: 8.289987
+    for building in dic :
+        blon = dic[building][1]
+        blat = dic[building][0]
+        path = os.path.join(r"D:\VGI_Data\building_demo\Hot place",building)
+        pics = os.listdir(path)
+        zeroCount = len(os.listdir(os.path.join(path,'in')))
+        dis_list = []
+        for i in range(zeroCount):
+            dis_list.append(0)
+        for pic in pics:
+            if pic.endswith('.jpg'):
+                lat = float(getPicinfo(pic)['lat'])
+                lon = float(getPicinfo(pic)['lon'])
+                dis_list.append( int(get_distance_hav(blat,blon,lat,lon))/10)
+        dis_list.sort()
+        print dis_list
+        calDx(dis_list,os.path.join(path,"analyze_files"),building)
 
 if __name__=="__main__":
     #formatjson(prov_file_path)
-    # 计算缓冲区
-    cal_pic_buffer(600)
-
-    #cal_building_buffer(500)
-    # #按osmid储存pic
-    # sourcepath = r'D:\VGI_Data\total_building'
-    # storpath = r'D:\VGI_Data\osm-flickr'
-    # storPicbyOsmid(sourcepath,storpath)
-
+    # 计算距离分布
+    building_dic ={"British Museum":(51.519459,-0.126931),"Buckingham Palace":(51.500833,-0.141944),"City Hall":(51.504722,-0.078333),
+                    "Hampton Palace":(51.403333,-0.3375),"Imperial War Museum":(51.49619,-0.10855),"National Gallery":(51.5086, -0.1283),
+                    "Royal Albert Hall":(51.500944,-0.177436),"St Paul's Cathedral":(51.513611,-0.098056),"Westminster Abbey":(51.499444,-0.1275)}
+    #building_dic = {"Hampton Palace": (51.403333, -0.3375)}
+    cal_min_dis(building_dic)
+    #
+    # #cal_building_buffer(500)
+    # # #按osmid储存pic
+    # # sourcepath = r'D:\VGI_Data\total_building'
+    # # storpath = r'D:\VGI_Data\osm-flickr'
+    # # storPicbyOsmid(sourcepath,storpath)
+    #
+    #
+    # # #移动建筑物内部照片
+    # path = r"D:\VGI_Data\building_demo\Hot place\Hampton Palace"
+    # newpath = r"D:\VGI_Data\building_demo\Hot place\Hampton Palace\in"
+    # f = file(r"D:\OSMData\greater-london-latest-free.shp\result\Hampton Court Palace\inthebuilding.txt")
+    # points = f.readlines()
+    # for p in points:
+    #     picname = p.split(',')[1]
+    #     shutil.move(os.path.join(path, picname), os.path.join(newpath, picname))

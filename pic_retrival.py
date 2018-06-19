@@ -14,16 +14,17 @@ File_list = []
 def getPicinfo(pic_name):
     table_name = pic_name.split('-')[0]
     pic_id = pic_name.split('-')[1].split('.')[0]
-    selectsql = 'select {0},{1},{2},{3},{4} from {5} where id = {6}'.format('description','tags','lon','lat','url_o',table_name,pic_id)
+    selectsql = 'select {0},{1},{2},{3},{4},{5} from {6} where id = {7}'.format('description','tags','lon','lat','url_m','url_o',table_name,pic_id)
     print selectsql
     result = sql_select(db,selectsql)
-    pic_dic = {'id':pic_id,'table_name':table_name,'description':'','tags':'','lon':'','lat':'','url_o':''}
+    pic_dic = {'id':pic_id,'table_name':table_name,'description':'','tags':'','lon':'','lat':'','url_m':'','url_o':''}
     for pic_info in result:
         pic_dic['description'] = pic_info[0]
         pic_dic['tags'] = pic_info[1]
         pic_dic['lon'] = pic_info[2]
         pic_dic['lat']= pic_info[3]
-        pic_dic['url_o'] = pic_info[4]
+        pic_dic['url_m'] = pic_info[4]
+        pic_dic['url_o'] = pic_info[5]
     return pic_dic
 
 def getpic_dic_list():
@@ -59,7 +60,7 @@ def get_file_list(data_path):
             get_file_list(new_dir)
 
 def get_building_pic_tags(storfile):
-    get_file_list(r'D:\VGI_Data\building_demo\Hot place\buckingham palace\sample')
+    get_file_list(r'D:\VGI_Data\building_demo\Hot place\Hampton Palace\analyze_files')
     total_num = len(File_list)
     for i in File_list:
         nl = i.split('\\')
@@ -70,21 +71,89 @@ def get_building_pic_tags(storfile):
         storfile.write(' '.join([pic_name,lon,lat]) + '\n')
         total_num -= 1
         print 'remain %d' % total_num
+
+def copyPicDetailSQL():
+    fl = os.listdir(r'D:\VGI_Data\total_building\err_img')
+    list = []
+    for pic_name in fl:
+        if '.jpg' in pic_name:
+            table_name = pic_name.split('-')[0]
+            pic_id = pic_name.split('-')[1].split('.')[0]
+            selectsql = 'select {0},{1},{2},{3},{4},{5} from {6} where id = {7}'.format('description', 'tags', 'lon',
+                                                                                        'lat',
+                                                                                        'url_m', 'url_o', table_name,
+                                                                                        pic_id)
+            print selectsql
+            result = sql_select(db, selectsql)
+            for pic_info in result:
+                pic = [pic_id, table_name, pic_info[2], pic_info[3], pic_info[4], pic_info[5], pic_info[0], pic_info[1]]
+                list.append(pic)
+    insert_sql = "INSERT IGNORE INTO `london_building_pic_info" \
+                 "` (id,table_name,lon,lat,url_m, url_o,description,tags)" \
+                 " values (%s, %s, %s, %s, %s, %s, %s, %s)"
+    patch_num = 1000  # 设置单次批量导入的数量
+    index = len(list) / patch_num
+    for i in range(index):
+        print '---- start insert part ' + str(i) + ' ----'
+        sql_insert_many(db, insert_sql, list[i * patch_num:(i + 1) * patch_num])
+    print '---- start insert part ' + str(index) + ' ----'
+    sql_insert_many(db, insert_sql, list[(i + 1) * patch_num:])
+
+def tag_search():
+    # 通过搜索tag方式获取图片数据
+    datapath = r"D:\VGI_Data\building_demo\not hot place\Imperial War Museum\tag_select"
+    selectsql = "select {0},{1},{2} from london_building_pic_info where tags like '%{3}%'".format("id","table_name", "url_m",
+                                                                                              "imperialwarmuseum")
+    print selectsql
+    result = sql_select(db, selectsql)
+    for pic_info in result:
+        pic_name = pic_info[1] +"-"+pic_info[0]+ '.jpg'
+        url = pic_info[2]
+        try:
+            if os.path.isdir(datapath):
+                filename = os.path.join(datapath, pic_name)
+            else:
+                os.makedirs(datapath)
+                filename = os.path.join(datapath, pic_name)
+            if os.path.exists(filename):
+                print 'aready download'
+            else:
+                print 'downloading %s' % pic_name
+                img = requests.get(url)
+                f = open(filename, "wb")
+                f.write(img.content)
+                f.close()
+        except Exception as e:
+            print e
+
 if __name__ == "__main__":
     #下载原图
     # dic = getpic_dic_list()
     # url_download(dic)
 
-    #获取图片tag,lat,lon等信息
-    storfile = file(r'D:\VGI_Data\building_demo\Hot place\buckingham palace\1\buckingham_0.txt','a+')
-    filelist = os.listdir(r'D:\VGI_Data\building_demo\Hot place\buckingham palace\sample')
+    #tag_search()
+
+    # 获取图片tag,lat,lon等信息
+    #rm = 0
+    #tagfile = file(r"D:\VGI_Data\building_demo\Hot place\King's Cross\analyze_files\Hampton_Palace_tag.txt",'a+')
+    picfile = file(r"D:\OSMData\building_points\Hampton_Court_Palace_w.txt",'a+')
+    filelist = os.listdir(r"D:\VGI_Data\building_demo\Hot place\Hampton Palace")
     for img in filelist:
         if '.jpg' in img:
             pic_info = getPicinfo(img)
             lat = pic_info['lat']
             lon = pic_info['lon']
-            storfile.write(' '.join([img, lon, lat]) + '\n')
-    storfile.close()
+            tag =  pic_info['tags']
+            # if 'nationalgallery' in tag or 'nationalgallery' in tag:
+            #     rm += 1
+            picfile.write(' '.join([img, lon, lat]) + '\n')
+            # if tag!='':
+            #     tagfile.write(tag + '\n')
+    #tagfile.close()
+    picfile.close()
+    #print rm
+
+
 
 
 

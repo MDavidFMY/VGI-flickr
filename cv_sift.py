@@ -115,9 +115,11 @@ def search_similar_img(target_imgs,sample_imgs,sample_path):
             sample_img_name = sample_img.split('\\')[1]
             if match_score > 30:
                 print '%s %s %d'% (target_img,sample_img,match_score)
-                buffer_path = os.path.join(sample_path.split('sample')[0], sample_img_name)
-                if not os.path.exists(buffer_path) and not os.path.exists(sample_img_name):
+                #buffer_path = os.path.join(sample_path.split('sample')[0], sample_img_name)
+                buffer_path = os.path.join(sample_path, sample_img_name)
+                if not os.path.exists(buffer_path):
                     shutil.copyfile(sample_img,os.path.join(sample_path,sample_img_name))
+
 
 if __name__ == "__main__":
     # for path in [os.path.join(data_path, f,'target') for f in os.listdir(data_path)]:
@@ -126,11 +128,18 @@ if __name__ == "__main__":
     #     sample_path = os.path.join(data_path,path.split('\\')[1],'sample')
     #     sample_imgs = get_imlist(building_img_path)
     #     search_similar_img(target_imgs,sample_imgs,sample_path)
-    path = r"D:\VGI_Data\building_demo\Hot place\Westminster\target"
+
+    path = r"D:\VGI_Data\building_demo\Hot place\Buckingham Palace\target"
     target_imgs = get_imlist(path)
-    sample_path = r"D:\VGI_Data\building_demo\Hot place\Westminster\sample"
-    sample_imgs = get_imlist(building_img_path)
+    sample_path = r"D:\VGI_Data\building_demo\Hot place\Buckingham Palace\matched"
+    #sample_imgs = get_imlist(building_img_path)
+    sample_imgs = get_imlist( "D:/VGI_Data/building_demo/Hot place/Buckingham Palace")
     search_similar_img(target_imgs,sample_imgs,sample_path)
+
+    # cluster_test = r"D:\VGI_Data\osm-flickr\5208404"
+    # test_imgs = get_imlist(path)
+
+
 
 
 

@@ -50,7 +50,7 @@ def grab_date_data(city_name,last_days):
             try:
                 while page_index <= pages:
                     json_obj = flickr.photos.search(page=page_index, perpage=200, radius=5.566, has_geo=1,
-                                                    lat=coordinate[0], lon=coordinate[1], min_upload_date=min_time,
+                                                    lat=coordinate[1], lon=coordinate[0], min_upload_date=min_time,
                                                     max_upload_date=max_time,
                                                     extras='description,date_upload,owner_name,last_update,geo,tags,machine_tags,url_m,url_c,url_o')
                     coor = str(coordinate[0])[:5] + " " + str(coordinate[1])[:5]

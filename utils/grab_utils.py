@@ -32,7 +32,7 @@ def grab_area(lat_min,lat_max,lon_min,lon_max) :
         while lat <lat_max :
             lon = lon_min
             while lon <lon_max :
-                coordinate = (lat,lon)
+                coordinate = (lon,lat)
                 area.append(coordinate)
                 lon +=0.1
             lat += 0.1
@@ -105,7 +105,6 @@ def convert_grab_date(start_time,format_c):
         delta = datetime.timedelta(days=1)
         n_day = day + delta
         covert_time.append(n_day.isoformat())
-
     return covert_time
 
 def add_one_day():
@@ -152,14 +151,28 @@ def data_static(city_name,date,count):
     :return:
     '''
     statics = {'city_name':city_name,'date':date,'count':count}
-    storfile = file(config_path + "grab_statics.json", "a+")
+    storfile = file(config_path + "mapillary_grab_statics.json", "a+")
     storfile.write(json.dumps(statics))
+    storfile.write("\n")
+    storfile.close()
+
+def e_log (city_name,date,coordinate):
+    '''
+    统计超过1000条数据的区域
+    :param city_name:
+    :param date:
+    :param count:
+    :return:
+    '''
+    logs = {'city_name':city_name,'date':date,'count':coordinate}
+    storfile = file(config_path + "overflow.json", "a+")
+    storfile.write(json.dumps(logs))
     storfile.write("\n")
     storfile.close()
 
 def write_config():
     #date = {"Client_ID":"ekcyWUdPNnkwSlRrMThjMVhWTFV0dzphYjRiMmE0MzM3YzQzMTAy","Client Secret":"MWQ2MWViYjBmZTRlNGJhNmYxZTZhYjI2MjczN2UzMDM="}
-    date = {"start_time": "2016-01-01 00:00:00"}
+    date = {"start_time": "2017-01-01 00:00:00"}
     storfile = file(config_path+"date_config.json","w+")
     storfile.write(json.dumps(date))
     storfile.close()
