@@ -172,7 +172,7 @@ def e_log (city_name,date,coordinate):
 
 def write_config():
     #date = {"Client_ID":"ekcyWUdPNnkwSlRrMThjMVhWTFV0dzphYjRiMmE0MzM3YzQzMTAy","Client Secret":"MWQ2MWViYjBmZTRlNGJhNmYxZTZhYjI2MjczN2UzMDM="}
-    date = {"start_time": "2017-01-01 00:00:00"}
+    date = {"start_time": "2014-04-01 00:00:00"}
     storfile = file(config_path+"date_config.json","w+")
     storfile.write(json.dumps(date))
     storfile.close()

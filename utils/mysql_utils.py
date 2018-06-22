@@ -74,6 +74,11 @@ def sql_insert_many(db,sql,values):
         db.rollback()
 
 if __name__ == "__main__":
-    db = connect_sql("shpdb")
+    db = connect_sql("vgiwork")
+    list = [('abc','dsda',56.5455,-0.15566),('1abc','2dsda',56.5455,-0.15566)]
+    insert_sql = "INSERT IGNORE INTO `london_mapillary` (key,user_key,lon,lat) values (%s, %s, %s, %s)"
+    sql_insert_many(db,insert_sql,list)
+    close_sql(db)
+
 
 

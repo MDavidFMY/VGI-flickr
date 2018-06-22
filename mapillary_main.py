@@ -7,7 +7,7 @@ Created on Tue Jul  4 11:36:45 2017
 import urllib,urllib2
 from utils.grab_utils import *
 MAPILLARY_API_IM_SEARCH_URL = 'https://a.mapillary.com/v3/images?client_id=ekcyWUdPNnkwSlRrMThjMVhWTFV0dzphYjRiMmE0MzM3YzQzMTAy&'
-MAPILLARY_IM_RETRIEVE_URL = 'https://d1cuyjsrcm0gby.cloudfront.net/%s/thumb-1024.jpg'
+
 
 '''
 调用flickr api的search接口，实现flickr的自动抓取
@@ -73,5 +73,5 @@ def grab_date_data(city_name,last_days):
 
 if __name__=="__main__":
     city_name = 'london'
-    last_days = 365
+    last_days = 306
     grab_date_data(city_name, last_days)
